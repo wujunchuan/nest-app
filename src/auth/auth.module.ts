@@ -1,10 +1,13 @@
 import { Module } from '@nestjs/common';
+import { PassportModule } from '@nestjs/passport';
+
 import { AuthService } from './auth.service';
-import { HttpStrategy } from './http.strategy';
-import { AppAuthGuard } from './AppAuthGuard';
-import { CookieSerializer } from './cookie-serializer';
+import { LocalStrategy } from './local.strategy';
+// import { AppAuthGuard } from './AppAuthGuard';
+// import { CookieSerializer } from './cookie-serializer';
 
 @Module({
-  providers: [AuthService, HttpStrategy, AppAuthGuard, CookieSerializer],
+  imports: [PassportModule],
+  providers: [AuthService, LocalStrategy],
 })
 export class AuthModule {}

@@ -21,6 +21,7 @@ export class UsersService implements IUserService {
     private readonly usersRepository: Repository<UserEntity>,
   ) {}
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   getProjectsForUser(user: UserEntity): Promise<ProjectEntity[]> {
     throw new Error('Method not implemented.');
   }

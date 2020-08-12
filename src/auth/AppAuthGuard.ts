@@ -1,3 +1,11 @@
+/*
+ * TODO:
+ * @Author: John Trump
+ * @Date: 2020-08-13 00:35:01
+ * @LastEditors: John Trump
+ * @LastEditTime: 2020-08-13 01:44:30
+ * @FilePath: /src/auth/AppAuthGuard.ts
+ */
 import {
   CanActivate,
   ExecutionContext,

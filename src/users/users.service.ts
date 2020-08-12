@@ -5,6 +5,7 @@ import { CreateUserDto } from './models/create-user.dto';
 import { UserEntity } from './user.entity';
 import { ProjectEntity } from '@/projects/projects.entity';
 
+/** 抽离出通用接口(方法有CRUD) */
 export interface IUserService {
   create(createUserDto: CreateUserDto): Promise<UserEntity>;
   findAll(): Promise<UserEntity[]>;
@@ -38,6 +39,13 @@ export class UsersService implements IUserService {
 
   findOne(id: string): Promise<UserEntity> {
     return this.usersRepository.findOne(id);
+  }
+
+  findOneByUserName(userName: string): Promise<UserEntity> {
+    return this.usersRepository.findOne({
+      select: ['password_hash', 'userName', 'id', 'lastName', 'firstName'],
+      where: { userName },
+    });
   }
 
   async remove(id: string): Promise<void> {

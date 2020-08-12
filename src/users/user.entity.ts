@@ -2,7 +2,7 @@
  * @Author: John Trump
  * @Date: 2020-08-09 16:54:12
  * @LastEditors: John Trump
- * @LastEditTime: 2020-08-13 00:10:08
+ * @LastEditTime: 2020-08-13 02:55:11
  * @FilePath: /src/users/user.entity.ts
  */
 import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
@@ -51,22 +51,4 @@ export class UserEntity extends BaseEntity {
     project => project.user,
   )
   projects: ProjectEntity[];
-
-  // /**
-  //  * Mark: 将数据库操作写在Entity试下
-  //  */
-  // public static async findAll(): Promise<UserEntity[]> {
-  //   const users: UserEntity[] = await UserEntity.findAll();
-  //   if (users.length > 0) {
-  //     return Promise.resolve(users);
-  //   } else {
-  //     // throw new AppError(AppErrorTypeEnum.NO_USERS_IN_DB);
-  //   }
-  // }
-
-  // public static async createUser() {
-  //   let u: UserEntity;
-  //   u = await UserEntity.find
-
-  // }
 }

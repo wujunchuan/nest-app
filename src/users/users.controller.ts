@@ -2,7 +2,7 @@
  * @Author: John Trump
  * @Date: 2020-08-09 16:52:28
  * @LastEditors: John Trump
- * @LastEditTime: 2020-08-13 01:57:08
+ * @LastEditTime: 2020-08-13 02:11:19
  * @FilePath: /src/users/users.controller.ts
  */
 import {
@@ -13,28 +13,17 @@ import {
   Param,
   Post,
   Put,
-  UseGuards,
-  Request,
 } from '@nestjs/common';
 
 import { CreateUserDto } from './models/create-user.dto';
 import { UsersService } from './users.service';
 import { UserEntity } from './user.entity';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { AuthGuard } from '@nestjs/passport';
 
 @Controller('user')
 @ApiTags('user')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
-
-  @UseGuards(AuthGuard('local'))
-  @Post('login')
-  // @ApiOperation({ summary: 'Authenticate' })
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  async login(@Request() req): Promise<any> {
-    return req.user;
-  }
 
   @Post()
   @ApiOperation({ summary: 'Create User' })

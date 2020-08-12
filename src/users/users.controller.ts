@@ -2,7 +2,7 @@
  * @Author: John Trump
  * @Date: 2020-08-09 16:52:28
  * @LastEditors: John Trump
- * @LastEditTime: 2020-08-10 00:22:29
+ * @LastEditTime: 2020-08-13 00:18:35
  * @FilePath: /src/users/users.controller.ts
  */
 import {
@@ -15,28 +15,33 @@ import {
   Put,
 } from '@nestjs/common';
 
-import { CreateUserDto } from './dto/create-user.dto';
+import { CreateUserDto } from './models/create-user.dto';
 import { UsersService } from './users.service';
-import { User } from './user.entity';
-import { ApiTags } from '@nestjs/swagger';
+import { UserEntity } from './user.entity';
+import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
-@Controller('users')
-@ApiTags('Users')
+@Controller('user')
+@ApiTags('user')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  create(@Body() createUserDto: CreateUserDto): Promise<User> {
+  @ApiOperation({ summary: 'Create User' })
+  create(@Body() createUserDto: CreateUserDto): Promise<UserEntity> {
     return this.usersService.create(createUserDto);
   }
 
   @Get()
-  findAll(): Promise<User[]> {
+  @ApiOperation({ summary: 'Get List of All Users' })
+  @ApiResponse({ status: 200, description: 'User Found.' })
+  @ApiResponse({ status: 404, description: 'No Users found.' })
+  // we do not need to handle any errors as they are handled by the global exception handler.
+  findAll(): Promise<UserEntity[]> {
     return this.usersService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string): Promise<User> {
+  findOne(@Param('id') id: string): Promise<UserEntity> {
     return this.usersService.findOne(id);
   }
 
@@ -49,7 +54,7 @@ export class UsersController {
   updateOne(
     @Param('id') id: string,
     @Body() createUserDto: CreateUserDto,
-  ): Promise<User> {
+  ): Promise<UserEntity> {
     return this.usersService.updateOne(id, createUserDto);
   }
 }

@@ -1,30 +1,41 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CreateUserDto } from './dto/create-user.dto';
-import { User } from './user.entity';
-import { createDecipher } from 'crypto';
+import { CreateUserDto } from './models/create-user.dto';
+import { UserEntity } from './user.entity';
+import { ProjectEntity } from '@/projects/projects.entity';
+
+export interface IUserService {
+  create(createUserDto: CreateUserDto): Promise<UserEntity>;
+  findAll(): Promise<UserEntity[]>;
+  findOne(id: string): Promise<UserEntity>;
+  remove(id: string): Promise<void>;
+  updateOne(id: string, createUserDto: CreateUserDto): Promise<UserEntity>;
+  getProjectsForUser(user: UserEntity): Promise<ProjectEntity[]>;
+}
 
 @Injectable()
-export class UsersService {
+export class UsersService implements IUserService {
   constructor(
-    @InjectRepository(User)
-    private readonly usersRepository: Repository<User>,
+    @InjectRepository(UserEntity)
+    private readonly usersRepository: Repository<UserEntity>,
   ) {}
 
-  create(createUserDto: CreateUserDto): Promise<User> {
-    const user = new User();
-    user.firstName = createUserDto.firstName;
-    user.lastName = createUserDto.lastName;
+  getProjectsForUser(user: UserEntity): Promise<ProjectEntity[]> {
+    throw new Error('Method not implemented.');
+  }
 
+  create(createUserDto: CreateUserDto): Promise<UserEntity> {
+    const user = new UserEntity();
+    Object.assign(user, createUserDto);
     return this.usersRepository.save(user);
   }
 
-  async findAll(): Promise<User[]> {
+  async findAll(): Promise<UserEntity[]> {
     return this.usersRepository.find();
   }
 
-  findOne(id: string): Promise<User> {
+  findOne(id: string): Promise<UserEntity> {
     return this.usersRepository.findOne(id);
   }
 
@@ -32,10 +43,12 @@ export class UsersService {
     await this.usersRepository.delete(id);
   }
 
-  async updateOne(id: string, createUserDto: CreateUserDto): Promise<User> {
-    const user = new User();
-    user.firstName = createUserDto.firstName;
-    user.lastName = createUserDto.lastName;
+  async updateOne(
+    id: string,
+    createUserDto: CreateUserDto,
+  ): Promise<UserEntity> {
+    const user = new UserEntity();
+    Object.assign(user, createUserDto);
     const { affected } = await this.usersRepository.update(id, user);
     if (affected > 0) return this.usersRepository.findOne(id);
   }

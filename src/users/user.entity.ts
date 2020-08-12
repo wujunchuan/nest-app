@@ -2,22 +2,71 @@
  * @Author: John Trump
  * @Date: 2020-08-09 16:54:12
  * @LastEditors: John Trump
- * @LastEditTime: 2020-08-10 00:24:50
+ * @LastEditTime: 2020-08-13 00:10:08
  * @FilePath: /src/users/user.entity.ts
  */
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import * as crypto from 'crypto';
 import BaseEntity from '@/baseEntity';
-@Entity()
-export class User extends BaseEntity {
+import { ProjectEntity } from '@/projects/projects.entity';
+@Entity({ name: 'user' })
+export class UserEntity extends BaseEntity {
   @PrimaryGeneratedColumn()
-  id: number;
+  public id: number;
 
-  @Column()
-  firstName: string;
+  @Column({
+    length: 30,
+  })
+  public firstName: string;
 
-  @Column()
-  lastName: string;
+  @Column({
+    length: 30,
+  })
+  public lastName: string;
 
-  // @Column({ default: true })
-  // isActive: boolean;
+  @Column({
+    length: 50,
+  })
+  public userName: string;
+
+  @Column({
+    length: 250,
+    // do not return this column when using find methods or running a query to select a user.
+    select: false,
+    // set the actual column name
+    name: 'password',
+  })
+  public password_hash: string;
+
+  /**
+   * TypeScript setter to automatically hash the password when the password property is set.
+   */
+  set password(password: string) {
+    const passHash = crypto.createHmac('sha256', password).digest('hex');
+    this.password_hash = passHash;
+  }
+  // TODO: one to many withProjectEntity
+  @OneToMany(
+    () => ProjectEntity,
+    project => project.user,
+  )
+  projects: ProjectEntity[];
+
+  // /**
+  //  * Mark: 将数据库操作写在Entity试下
+  //  */
+  // public static async findAll(): Promise<UserEntity[]> {
+  //   const users: UserEntity[] = await UserEntity.findAll();
+  //   if (users.length > 0) {
+  //     return Promise.resolve(users);
+  //   } else {
+  //     // throw new AppError(AppErrorTypeEnum.NO_USERS_IN_DB);
+  //   }
+  // }
+
+  // public static async createUser() {
+  //   let u: UserEntity;
+  //   u = await UserEntity.find
+
+  // }
 }

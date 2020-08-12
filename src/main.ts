@@ -1,7 +1,11 @@
 import { NestFactory } from '@nestjs/core';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import * as passport from 'passport';
+import * as session from 'express-session';
+
+import { DispatchError } from './common/filters/DispatchError';
+import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -25,6 +29,22 @@ async function bootstrap() {
     // exceptionFactory: error => new MyException(400, 40001, null, error),
     // }
   );
+
+  /* 全局过滤器 */
+  app.useGlobalFilters(new DispatchError());
+
+  /* 设置Auth */
+  app.use(
+    session({
+      secret: 'secret-key',
+      name: 'sess-tutorial',
+      resave: false,
+      saveUninitialized: false,
+    }),
+  );
+
+  app.use(passport.initialize());
+  app.use(passport.session());
 
   console.log('process.env.NODE_ENV:', process.env.NODE_ENV);
   await app.listen(3000);

@@ -17,7 +17,7 @@ async function bootstrap() {
     .addBearerAuth({ type: 'http' })
     .build();
   const document = SwaggerModule.createDocument(app, options);
-  SwaggerModule.setup('api', app, document);
+  SwaggerModule.setup('docs', app, document);
 
   // 验证器错误处理
   app.useGlobalPipes(

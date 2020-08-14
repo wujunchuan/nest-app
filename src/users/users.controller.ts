@@ -2,7 +2,7 @@
  * @Author: John Trump
  * @Date: 2020-08-09 16:52:28
  * @LastEditors: John Trump
- * @LastEditTime: 2020-08-15 01:26:09
+ * @LastEditTime: 2020-08-15 02:00:43
  * @FilePath: /src/users/users.controller.ts
  */
 import {
@@ -13,12 +13,19 @@ import {
   Param,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiSecurity,
+} from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
 
 import { CreateUserDto } from './models/create-user.dto';
 import { UsersService } from './users.service';
 import { UserEntity } from './user.entity';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 @Controller('user')
 @ApiTags('user')
@@ -31,6 +38,8 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
+  @UseGuards(AuthGuard('jwt'))
+  @ApiSecurity('bearer')
   @Get()
   @ApiOperation({ summary: '获取所有用户' })
   @ApiResponse({ status: 200, description: 'User Found.' })

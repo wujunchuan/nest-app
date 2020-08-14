@@ -24,6 +24,7 @@ export class AuthService {
   }
 
   login(user: any) {
+    console.log(user);
     const payload = { username: user.userName, sub: user.id };
     return {
       /* @nest-jwt 提供的, 用于从用户对象属性的子集生成 jwt，然后以简单对象的形式返回一个 access_token 属性 */

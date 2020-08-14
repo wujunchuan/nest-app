@@ -1,3 +1,11 @@
+/*
+ * TODO: session-strategy
+ * @Author: John Trump
+ * @Date: 2020-08-13 02:58:10
+ * @LastEditors: John Trump
+ * @LastEditTime: 2020-08-15 01:16:33
+ * @FilePath: /src/auth/SessionGuard.ts
+ */
 import { CanActivate, ExecutionContext } from '@nestjs/common';
 import { AppError } from '../common/error/AppError';
 import { AppErrorTypeEnum } from '../common/error/AppErrorTypeEnum';

@@ -2,7 +2,7 @@
  * @Author: John Trump
  * @Date: 2020-08-09 16:52:28
  * @LastEditors: John Trump
- * @LastEditTime: 2020-08-15 02:21:40
+ * @LastEditTime: 2020-08-16 02:01:47
  * @FilePath: /src/users/users.controller.ts
  */
 import {
@@ -39,7 +39,7 @@ export class UsersController {
   }
 
   @Get()
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard())
   @ApiSecurity('bearer')
   @ApiOperation({ summary: '获取所有用户' })
   @ApiResponse({ status: 200, description: 'User Found.' })
@@ -50,7 +50,7 @@ export class UsersController {
   }
 
   @Get(':id')
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard())
   @ApiSecurity('bearer')
   @ApiOperation({ summary: '查找用户' })
   findOne(@Param('id') id: string): Promise<UserEntity> {
@@ -58,7 +58,7 @@ export class UsersController {
   }
 
   @Delete(':id')
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard())
   @ApiSecurity('bearer')
   @ApiOperation({ summary: '删除用户' })
   remove(@Param('id') id: string): Promise<void> {
@@ -66,7 +66,7 @@ export class UsersController {
   }
 
   @Put(':id')
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard())
   @ApiSecurity('bearer')
   @ApiOperation({ summary: '更新用户信息' })
   updateOne(

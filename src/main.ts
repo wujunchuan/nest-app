@@ -4,8 +4,9 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 // import * as passport from 'passport';
 // import * as session from 'express-session';
 
-import { DispatchError } from './common/filters/DispatchError';
+import { HttpExceptionFilter } from './common/filters/HttpExceptionFilter';
 import { AppModule } from './app.module';
+import { TransformInterceptor } from './common/interceptor/transform.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -25,12 +26,12 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('docs', app, document);
 
-  // 验证器错误处理
+  /* 统一验证DTO */
   app.useGlobalPipes(new ValidationPipe());
-
-  /* 全局过滤器 */
-  /* TODO: 过滤器待完善 */
-  // app.useGlobalFilters(new DispatchError());
+  /* 统一请求成功的返回数据 */
+  app.useGlobalInterceptors(new TransformInterceptor());
+  /* 拦截全部的错误请求,统一返回格式 */
+  app.useGlobalFilters(new HttpExceptionFilter());
 
   /* 设置Auth */
   // app.use(

@@ -4,15 +4,13 @@
  * @Author: John Trump
  * @Date: 2020-08-12 23:48:02
  * @LastEditors: John Trump
- * @LastEditTime: 2020-08-12 23:49:57
+ * @LastEditTime: 2020-08-17 00:54:49
  * @FilePath: /src/common/error/IErrorMessage.ts
  */
-import { AppErrorTypeEnum } from './AppErrorTypeEnum';
 import { HttpStatus } from '@nestjs/common';
 
 export interface IErrorMessage {
-  type: AppErrorTypeEnum;
-  httpStatus: HttpStatus;
+  /** 指定HTTPCode, 默认为 200 */
+  httpStatus?: HttpStatus;
   errorMessage: string;
-  userMessage: string;
 }

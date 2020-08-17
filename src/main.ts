@@ -1,5 +1,6 @@
 import { NestFactory } from '@nestjs/core';
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, Logger } from '@nestjs/common';
+import { WINSTON_MODULE_NEST_PROVIDER, WinstonModule } from 'nest-winston';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as helmet from 'helmet';
 import * as rateLimit from 'express-rate-limit';
@@ -11,26 +12,28 @@ import { HttpExceptionFilter } from './common/filters/HttpExceptionFilter';
 import { AppModule } from './app.module';
 import { TransformInterceptor } from './common/interceptor/transform.interceptor';
 
+/** 服务启动的端口 */
+const port = process.env.PORT || 3000;
+
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  /* init Swagger support */
+  const app = await NestFactory.create(AppModule, {
+    // https://github.com/gremo/nest-winston#use-as-the-main-nest-logger-also-for-bootstrapping
+    logger: WinstonModule.createLogger({}),
+  });
+  /* 设置日志 */
+  app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
+
+  /* Swagger */
   const options = new DocumentBuilder()
     .setTitle('Nest.js app')
     .setDescription('The API description')
     .setVersion('1.0')
     .addBearerAuth({ type: 'http', bearerFormat: 'JWT', scheme: 'bearer' })
-    // .addSecurity('basic', {
-    //   type: 'http',
-    //   scheme: 'basic',
-
-    // })
-    // .addBasicAuth({type: ''})
     .build();
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('docs', app, document);
 
   /* 设置接口请求频率 */
-  // 访问频率限制
   app.use(
     rateLimit({
       windowMs: 15 * 60 * 1000, // 15分钟
@@ -68,8 +71,8 @@ async function bootstrap() {
   // app.use(passport.initialize());
   // app.use(passport.session());
 
-  console.log('process.env.NODE_ENV:', process.env.NODE_ENV);
-  await app.listen(3000);
-  console.log(`Application is running on: ${await app.getUrl()}`);
+  Logger.log('process.env.NODE_ENV:', process.env.NODE_ENV);
+  await app.listen(port);
+  Logger.log(`http://localhost:${port}`, '服务启动成功');
 }
 bootstrap();

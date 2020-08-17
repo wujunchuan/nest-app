@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { WinstonModule } from 'nest-winston';
+import * as winston from 'winston';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -10,6 +11,7 @@ import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
+    /* ORM, TypeORM */
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: '127.0.0.1',
@@ -21,7 +23,18 @@ import { UsersModule } from './users/users.module';
       autoLoadEntities: true,
       synchronize: true,
     }),
-    WinstonModule.forRoot({}),
+    /* 日志, Winston */
+    WinstonModule.forRoot({
+      level: 'info',
+      format: winston.format.json(),
+      defaultMeta: { service: 'user-service' },
+      transports: [
+        // - Write all logs with level `error` and below to `error.log`
+        new winston.transports.File({ filename: 'error.log', level: 'error' }),
+        // - Write all logs with level `info` and below to `combined.log`
+        new winston.transports.File({ filename: 'combined.log' }),
+      ],
+    }),
     UsersModule,
     ProjectsModule,
     AuthModule,

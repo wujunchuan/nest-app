@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe, Logger } from '@nestjs/common';
 import { WINSTON_MODULE_NEST_PROVIDER, WinstonModule } from 'nest-winston';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+
 import * as helmet from 'helmet';
 import * as rateLimit from 'express-rate-limit';
 
@@ -9,8 +10,8 @@ import * as rateLimit from 'express-rate-limit';
 // import * as session from 'express-session';
 
 import { HttpExceptionFilter } from './common/filters/HttpExceptionFilter';
-import { AppModule } from './app.module';
 import { TransformInterceptor } from './common/interceptor/transform.interceptor';
+import { AppModule } from './app.module';
 
 /** 服务启动的端口 */
 const port = process.env.PORT || 3000;

@@ -46,11 +46,12 @@ async function bootstrap() {
   /* 统一验证DTO */
   app.useGlobalPipes(
     new ValidationPipe({
+      // MARK: 搞明白这些参数是干嘛的
       transform: true,
-      whitelist: true,
-      forbidNonWhitelisted: true,
-      skipMissingProperties: false,
-      forbidUnknownValues: true,
+      // whitelist: true,
+      // forbidNonWhitelisted: true,
+      // skipMissingProperties: false,
+      // forbidUnknownValues: true,
     }),
   );
 

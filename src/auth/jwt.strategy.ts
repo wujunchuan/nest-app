@@ -3,21 +3,23 @@
  * @Author: John Trump
  * @Date: 2020-08-15 01:16:00
  * @LastEditors: John Trump
- * @LastEditTime: 2020-08-15 01:36:44
+ * @LastEditTime: 2020-08-20 01:57:27
  * @FilePath: /src/auth/jwt.strategy.ts
  */
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy, ExtractJwt } from 'passport-jwt';
-import { jwtConstants } from './constants';
+import { ConfigService } from '@nestjs/config';
+import { Injectable } from '@nestjs/common';
 
+@Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor() {
+  constructor(private readonly config: ConfigService) {
     super({
       // 提供从请求中提取 JWT 的方法
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       // 过期token将被拒绝
       ignoreExpiration: false,
-      secretOrKey: jwtConstants.secret,
+      secretOrKey: config.get<string>('JWTConfig.secretKey'),
     });
   }
 

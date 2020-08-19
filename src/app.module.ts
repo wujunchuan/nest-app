@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, Logger } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { WinstonModule, utilities } from 'nest-winston';
 import * as winston from 'winston';
@@ -8,20 +8,38 @@ import { AppService } from './app.service';
 import { ProjectsModule } from './projects/projects.module';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import appConfig from './config';
 
 @Module({
   imports: [
+    // 配置模块
+    ConfigModule.forRoot({
+      load: appConfig,
+      isGlobal: true,
+    }),
     /* ORM, TypeORM */
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: '127.0.0.1',
-      port: 3306,
-      username: 'root',
-      password: 'meetone123',
-      database: 'nest_zero_to_one',
-      /* with that options, every model registered through the `forFeature()` method will be automatically added to the `models` arrays of the configuration object */
-      autoLoadEntities: true,
-      synchronize: true,
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (config: ConfigService) => {
+        return {
+          type: config.get<'mysql'>('database.type'),
+          host: config.get<string>('database.host'),
+          port: config.get<number>('database.port'),
+          username: config.get<string>('database.username'),
+          password: config.get<string>('database.password'),
+          database: config.get<string>('database.database'),
+          charset: config.get<string>('database.charset'),
+          multipleStatements: config.get<boolean>(
+            'database.multipleStatements',
+          ),
+          connectionLimit: 10, // 连接限制
+          /* with that options, every model registered through the `forFeature()` method will be automatically added to the `models` arrays of the configuration object */
+          autoLoadEntities: true,
+          synchronize: config.get<boolean>('database.synchronize'),
+        };
+      },
     }),
     /* 日志, Winston */
     WinstonModule.forRoot({

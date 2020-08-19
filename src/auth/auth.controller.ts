@@ -18,6 +18,7 @@ export class AuthController {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     @Body() _authDto: LocalAuthDto,
   ): Promise<any> {
+    console.log(_authDto);
     return this.authService.login(req.user);
   }
 }

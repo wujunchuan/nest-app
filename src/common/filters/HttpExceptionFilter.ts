@@ -3,7 +3,7 @@
  * @Author: John Trump
  * @Date: 2020-08-12 23:56:16
  * @LastEditors: John Trump
- * @LastEditTime: 2020-08-21 01:15:25
+ * @LastEditTime: 2020-08-21 01:52:38
  * @FilePath: /src/common/filters/HttpExceptionFilter.ts
  */
 import {
@@ -13,6 +13,7 @@ import {
   HttpStatus,
   UnauthorizedException,
   LoggerService,
+  HttpException,
 } from '@nestjs/common';
 
 import { AppError } from '../error/AppError';
@@ -26,9 +27,33 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const res = ctx.getResponse<Response>();
     const req = ctx.getRequest<Request>();
-    this.logger.error(`${req.originalUrl}`, req.rawHeaders.toString());
-    this.logger.error(`request payload:`, JSON.stringify(req.body));
-    this.logger.error(`${exception}`, exception);
+    // Get the location where the error was thrown from to use as a logging tag
+    const status =
+      exception instanceof HttpException
+        ? exception.getStatus()
+        : HttpStatus.INTERNAL_SERVER_ERROR;
+    const method = req.method;
+    const url = req.url;
+    const requestTime = Number(req.params.requestTime) || 0;
+    const stackTop = exception.stack
+      .split('\n')[1]
+      .split('at ')[1]
+      .split(' ')[0];
+    this.logger.log(
+      `${method} ${url} - ${status} - ${Date.now() - requestTime}ms`,
+      'Access',
+    );
+    this.logger.error(`${exception}`, stackTop, HttpExceptionFilter.name);
+    this.logger.error(
+      `${req.originalUrl}`,
+      req.rawHeaders.toString(),
+      HttpExceptionFilter.name,
+    );
+    this.logger.error(
+      `request payload:`,
+      JSON.stringify(req.body),
+      HttpExceptionFilter.name,
+    );
     /* 自定义异常处理 */
     if (exception instanceof AppError) {
       return res.status(exception.httpStatus).json({

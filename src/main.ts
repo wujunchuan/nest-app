@@ -13,6 +13,7 @@ import { HttpExceptionFilter } from './common/filters/HttpExceptionFilter';
 import { TransformInterceptor } from './common/interceptor/transform.interceptor';
 import { AppModule } from './app.module';
 import loggerOptions from './common/logger';
+import { LoggingInterceptor } from './common/interceptor/logging.interceptor';
 
 /** 服务启动的端口 */
 const port = process.env.PORT || 3000;
@@ -59,6 +60,8 @@ async function bootstrap() {
   );
   /* 统一请求成功的返回数据 */
   app.useGlobalInterceptors(new TransformInterceptor());
+  /** 统一打上时间戳, 统计接口耗时 */
+  app.useGlobalInterceptors(new LoggingInterceptor(logger));
   /* 拦截全部的错误请求,统一返回格式 */
   app.useGlobalFilters(new HttpExceptionFilter(logger));
 
@@ -75,8 +78,8 @@ async function bootstrap() {
   // app.use(passport.initialize());
   // app.use(passport.session());
 
-  logger.log(`process.env.NODE_ENV:${process.env.NODE_ENV}`, 'bootstrap');
+  logger.log(`process.env.NODE_ENV:${process.env.NODE_ENV}`, bootstrap.name);
   await app.listen(port);
-  logger.log(`http://localhost:${port} 服务启动成功`, 'bootstrap');
+  logger.log(`http://localhost:${port} 服务启动成功`, bootstrap.name);
 }
 bootstrap();

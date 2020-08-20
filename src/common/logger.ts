@@ -3,7 +3,7 @@
  * @Author: John Trump
  * @Date: 2020-08-21 00:35:13
  * @LastEditors: John Trump
- * @LastEditTime: 2020-08-21 01:02:07
+ * @LastEditTime: 2020-08-21 01:40:44
  * @FilePath: /src/common/logger.ts
  */
 import * as winston from 'winston';

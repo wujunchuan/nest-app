@@ -2,7 +2,7 @@
  * @Author: John Trump
  * @Date: 2020-08-09 16:54:12
  * @LastEditors: John Trump
- * @LastEditTime: 2020-08-13 02:55:11
+ * @LastEditTime: 2020-08-20 02:10:07
  * @FilePath: /src/users/user.entity.ts
  */
 import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
@@ -42,6 +42,7 @@ export class UserEntity extends BaseEntity {
    * TypeScript setter to automatically hash the password when the password property is set.
    */
   set password(password: string) {
+    // extract: cryptoUtil.encryptPassword
     const passHash = crypto.createHmac('sha256', password).digest('hex');
     this.password_hash = passHash;
   }

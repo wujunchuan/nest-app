@@ -16,6 +16,7 @@ export class AuthService {
     if (!user) return null;
 
     /* 对密码进行散列操作, 并且与数据库的散列值进行对比 */
+    // extract: cryptoUtil.encryptPassword
     const passHash = crypto.createHmac('sha256', password).digest('hex');
     if (user.password_hash === passHash) {
       delete user.password_hash;

@@ -12,16 +12,19 @@ import * as rateLimit from 'express-rate-limit';
 import { HttpExceptionFilter } from './common/filters/HttpExceptionFilter';
 import { TransformInterceptor } from './common/interceptor/transform.interceptor';
 import { AppModule } from './app.module';
+import loggerOptions from './common/logger';
 
 /** 服务启动的端口 */
 const port = process.env.PORT || 3000;
+/** Winston Logger */
+const logger = WinstonModule.createLogger(loggerOptions);
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     // https://github.com/gremo/nest-winston#use-as-the-main-nest-logger-also-for-bootstrapping
-    logger: WinstonModule.createLogger({}),
+    logger,
   });
-  /* 设置日志 */
+  /* 设置 `Winston.logger` 日志为Nest的日志, 这样才能打印出系统初始化时的日志 */
   app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
 
   /* Swagger */

@@ -1,5 +1,5 @@
 import { NestFactory } from '@nestjs/core';
-import { ValidationPipe, Logger } from '@nestjs/common';
+import { ValidationPipe } from '@nestjs/common';
 import { WINSTON_MODULE_NEST_PROVIDER, WinstonModule } from 'nest-winston';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
@@ -57,11 +57,10 @@ async function bootstrap() {
       // forbidUnknownValues: true,
     }),
   );
-
   /* 统一请求成功的返回数据 */
   app.useGlobalInterceptors(new TransformInterceptor());
   /* 拦截全部的错误请求,统一返回格式 */
-  app.useGlobalFilters(new HttpExceptionFilter());
+  app.useGlobalFilters(new HttpExceptionFilter(logger));
 
   /* 设置Auth */
   // app.use(
@@ -76,8 +75,8 @@ async function bootstrap() {
   // app.use(passport.initialize());
   // app.use(passport.session());
 
-  Logger.log('process.env.NODE_ENV:', process.env.NODE_ENV);
+  logger.log(`process.env.NODE_ENV:${process.env.NODE_ENV}`, 'bootstrap');
   await app.listen(port);
-  Logger.log(`http://localhost:${port}`, '服务启动成功');
+  logger.log(`http://localhost:${port} 服务启动成功`, 'bootstrap');
 }
 bootstrap();

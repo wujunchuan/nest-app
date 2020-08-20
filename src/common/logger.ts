@@ -3,8 +3,8 @@
  * @Author: John Trump
  * @Date: 2020-08-21 00:35:13
  * @LastEditors: John Trump
- * @LastEditTime: 2020-08-21 00:46:38
- * @FilePath: /src/config/logger.ts
+ * @LastEditTime: 2020-08-21 01:02:07
+ * @FilePath: /src/common/logger.ts
  */
 import * as winston from 'winston';
 import { utilities } from 'nest-winston';
